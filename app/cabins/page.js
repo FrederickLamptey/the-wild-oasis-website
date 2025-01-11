@@ -2,6 +2,11 @@ import { Suspense } from 'react';
 import CabinList from '@/app/_components/CabinList';
 import Spinner from '../_components/Spinner';
 
+//make cabins page dynamic / defining cache duration
+export const revalidate = 3600;
+// export const revalidate = 15;
+
+//set page title for cabins
 export const metadata = {
   title: 'Cabins',
 };
