@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import CabinList from '@/app/_components/CabinList';
 import Spinner from '../_components/Spinner';
+import Filter from '../_components/Filter';
 
 //make cabins page dynamic / defining cache duration
 export const revalidate = 3600;
@@ -12,8 +13,7 @@ export const metadata = {
 };
 
 export default function Page({ searchParams }) {
-  const filter = searchParams?.capacity ?? "all";
-
+  const filter = searchParams?.capacity ?? 'all';
 
   return (
     <div>
@@ -29,8 +29,12 @@ export default function Page({ searchParams }) {
         Welcome to paradise.
       </p>
 
-      <Suspense fallback={<Spinner />}>
-        <CabinList filter={ filter} />
+      <div className="flex justify-end mb-8">
+        <Filter />
+      </div>
+
+      <Suspense fallback={<Spinner />} key={filter}>
+        <CabinList filter={filter} />
       </Suspense>
     </div>
   );
