@@ -1,5 +1,7 @@
+import DateSelector from '@/app/_components/DateSelector';
+import ReservationForm from '@/app/_components/ReservationForm';
 import TextExpander from '@/app/_components/TextExpander';
-import { getCabin, getCabins } from '@/app/_lib/data-service';
+import { getBookedDatesByCabinId, getCabin, getCabins, getSettings } from '@/app/_lib/data-service';
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 
@@ -20,9 +22,19 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params }) {
-  const cabin = await getCabin(params.cabinId);
+  // const cabin = await getCabin(params.cabinId);
+  // const settings = await getSettings();
+  // const bookedDates = await getBookedDatesByCabinId(params.cabinId);
+
+  //get all promises at once to avoid delays. A better approach than the above.
+  const [cabin, settings, bookedDates] = await Promise.all([
+    getCabin(params.cabinId),
+    getSettings(),
+    getBookedDatesByCabinId(params.cabinId),
+  ]);
+
   const { id, name, maxCapacity, regularPrice, discount, image, description } =
-    cabin;
+    cabin; 
 
   return (
     <div className="max-w-6xl mx-auto mt-8">
@@ -71,9 +83,14 @@ export default async function Page({ params }) {
       </div>
 
       <div>
-        <h2 className="text-5xl font-semibold text-center">
-          Reserve today. Pay on arrival.
+        <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+          Reserve {name} today. Pay on arrival.
         </h2>
+
+        <div className='grid grid-cols-2 border border-primary-800 min-h-[400px]'>
+          <DateSelector />
+          <ReservationForm />
+        </div>
       </div>
     </div>
   );
